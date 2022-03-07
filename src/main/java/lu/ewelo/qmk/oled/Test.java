@@ -1,3 +1,5 @@
+package lu.ewelo.qmk.oled;
+
 import org.apache.hc.core5.http.ParseException;
 import org.hid4java.*;
 import org.hid4java.event.HidServicesEvent;
@@ -18,19 +20,19 @@ public class Test implements HidServicesListener {
         // Configure to use custom specification
         HidServicesSpecification hidServicesSpecification = new HidServicesSpecification();
 
-// Use the v0.7.0 manual start feature to get immediate attach events
+        // Use the v0.7.0 manual start feature to get immediate attach events
         hidServicesSpecification.setAutoStart(false);
 
-// Get HID services using custom specification
+        // Get HID services using custom specification
         HidServices hidServices = HidManager.getHidServices(hidServicesSpecification);
         hidServices.addHidServicesListener(this);
 
-// Manually start the services to get attachment event
+        // Manually start the services to get attachment event
         hidServices.start();
 
         HidDevice keyboard = null;
 
-// Provide a list of attached devices
+        // Provide a list of attached devices
         for (HidDevice hidDevice : hidServices.getAttachedHidDevices()) {
             if (hidDevice.getProduct() != null
                     && hidDevice.getProduct().equalsIgnoreCase("MYSTERIUM")
@@ -49,9 +51,9 @@ public class Test implements HidServicesListener {
     }
 
     public static void main(String[] args) {
-        //new Test();
+        new Test();
 
-        SpotifyApi spotifyApi = new SpotifyApi.Builder()
+        /*SpotifyApi spotifyApi = new SpotifyApi.Builder()
                 .setClientId("")
                 .setClientSecret("")
                 .setRedirectUri(SpotifyHttpManager.makeUri("https://example.com/spotify-redirect"))
@@ -66,7 +68,7 @@ public class Test implements HidServicesListener {
 
         URI uri = authorizationCodeUriRequest.execute();
 
-        System.out.println("URI: " + uri.toString());
+        System.out.println("URI: " + uri.toString());*/
     }
 
     @Override

@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'org.example'
 version '1.0-SNAPSHOT'
+
+application {
+    mainClassName = "MysteriumKeyboardOLED"
+}
 
 repositories {
     mavenCentral()
@@ -12,7 +17,16 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    //Logging
+    implementation 'ch.qos.logback:logback-core:1.2.11'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+
+    //Hid4Java
     implementation 'org.hid4java:hid4java:0.7.0'
+
+    //Spotify Web API Java
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:7.0.0'
 }
 

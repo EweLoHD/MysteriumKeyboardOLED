@@ -14,10 +14,11 @@ public class Config {
 
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
 
-    private Properties properties;
+    private final Properties properties;
+    private final File file;
 
     private Config(String configPath, HashMap<String, Object> defaults) {
-        File file = new File(configPath);
+        this.file = new File(configPath);
 
         this.properties = new Properties();
 
@@ -48,6 +49,18 @@ public class Config {
             } catch (IOException e) {
                 logger.error("Could not load Config File", e);
             }
+        }
+    }
+
+    public void set(String key, String value) {
+        properties.setProperty(key, value);
+    }
+
+    public void save() {
+        try {
+            properties.store(new FileOutputStream(file), null);
+        } catch (IOException e) {
+            logger.error("Exception while saving Config File", e);
         }
     }
 

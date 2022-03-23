@@ -1,4 +1,4 @@
-package lu.ewelo.qmk.oled.screen.annotations;
+package lu.ewelo.qmk.oled.keyboard.screen.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,9 +1,12 @@
-package lu.ewelo.qmk.oled;
+package lu.ewelo.qmk.oled.keyboard;
 
-import lu.ewelo.qmk.oled.screen.ScreenManager;
+import lu.ewelo.qmk.oled.keyboard.screen.ScreenManager;
 import org.hid4java.HidDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 
 public class Keyboard {
@@ -12,9 +15,15 @@ public class Keyboard {
 
     private final HidDevice hidDevice;
     private ScreenManager screenManager;
+    private final ScreenSize screenSize;
+
+    public Keyboard(HidDevice hidDevice, ScreenSize screenSize) {
+        this.hidDevice = hidDevice;
+        this.screenSize = screenSize;
+    }
 
     public Keyboard(HidDevice hidDevice) {
-        this.hidDevice = hidDevice;
+        this(hidDevice, new ScreenSize(128, 32));
     }
 
     /**
@@ -23,7 +32,13 @@ public class Keyboard {
     public void open() {
         if (!hidDevice.open()) {
             logger.error("Could not open Connection to Keyboard! Last Error Message: " + hidDevice.getLastErrorMessage());
+        } else {
+            logger.info("Opened Connection to the Keyboard.");
         }
+    }
+
+    public void render() {
+        screenManager.render();
     }
 
     /**
@@ -39,15 +54,19 @@ public class Keyboard {
      */
     public void write(byte[] message) {
         if (hidDevice.isOpen()) {
+            logger.info("Writing to Keyboard: " + Arrays.asList(message).stream().map(x -> String.format("0x%02X", x)).collect(Collectors.joining()));
             hidDevice.write(message, message.length, (byte) 0x00);
         } else {
             logger.error("Could not write message: Connection has not been opened!");
         }
     }
 
+    public void sendInstruction(KeyboardInstruction instruction) {
+        logger.info("Sending Instruction to Keyboard: " + instruction);
+        write(instruction.getData());
+    }
 
     public void setScreenManager(ScreenManager screenManager) {
-        screenManager.setKeyboard(this);
         this.screenManager = screenManager;
     }
 
@@ -73,8 +92,39 @@ public class Keyboard {
         return hidDevice;
     }
 
+    public ScreenSize getScreenSize() {
+        return screenSize;
+    }
+
     @Override
     public String toString() {
         return hidDevice.toString();
     }
+
+    public static class ScreenSize {
+        private int width;
+        private int height;
+
+        public ScreenSize(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+    }
+
 }

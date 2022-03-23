@@ -1,4 +1,4 @@
-package lu.ewelo.qmk.oled;
+package lu.ewelo.qmk.oled.keyboard;
 
 import org.hid4java.HidManager;
 import org.hid4java.HidServices;

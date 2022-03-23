@@ -1,12 +1,15 @@
 package lu.ewelo.qmk.oled;
 
+import lu.ewelo.qmk.oled.util.Config;
 import org.apache.hc.core5.http.ParseException;
 import org.hid4java.*;
 import org.hid4java.event.HidServicesEvent;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.User;
+import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfileRequest;
 
@@ -51,7 +54,32 @@ public class Test implements HidServicesListener {
     }
 
     public static void main(String[] args) {
-        new Test();
+        //new Test();
+
+        Config config = new Config.ConfigBuilder()
+                .setPath("config.properties")
+                .build();
+
+        SpotifyApi spotifyApi = new SpotifyApi.Builder()
+                .setClientId(config.get("spotify-client-id"))
+                .setClientSecret(config.get("spotify-client-secret"))
+                .setRedirectUri(SpotifyHttpManager.makeUri("http://localhost:6969/spotify-redirect"))
+                .build();
+
+        AuthorizationCodeRequest authorizationCodeRequest =
+                spotifyApi.authorizationCode("AQDnSW4I2wIcERnxV9kbi1ocpVQ6diInWP9JZbG2csVpHxkEPHE7d2PDCv01U74wUxR9rObXiDRZ9tezoZviZJcWd_WHkha030960rR0Lw6K5nBvzXTnsKUI3tM4eSXTLvBYWb5ufEu1H7mWuiR8MpvVV795j0UIan0Qwn0h2-Xys7gV_LNJLluq").build();
+        try {
+            AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
+
+            System.out.println(authorizationCodeCredentials.getAccessToken());
+
+            spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+            spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+
+            System.out.println("Expires in: " + authorizationCodeCredentials.getExpiresIn());
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            e.printStackTrace();
+        }
 
         /*SpotifyApi spotifyApi = new SpotifyApi.Builder()
                 .setClientId("")
